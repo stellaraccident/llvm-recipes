@@ -1,4 +1,4 @@
 *.o
 *.lib
 *.hsaco
-
+*.bc
