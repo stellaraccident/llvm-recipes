@@ -33,6 +33,7 @@ compile_device_cc() {
         -triple amdgcn-amd-amdhsa \
         -target-cpu $arch \
         -fcuda-is-device \
+        -O3 \
         -emit-obj \
         -o "$object_file" \
         -x ir "$bc_file"
@@ -40,8 +41,9 @@ compile_device_cc() {
 
 rm -f *.o *.bc *.hsaco
 
+archs="gfx1100 gfx1151 gfx942 gfx906 gfx1101 gfx1201 gfx1200 gfx1010 gfx906 gfx1030 gfx900"
 # Compile in parallel for all architectures.
-for arch in gfx1100 gfx1151; do
+for arch in $archs; do
     echo ":: Compiling arch $arch"
     compile_device_cc device_fragment_1.cc device_fragment_1_$arch.o $arch &
     compile_device_cc device_fragment_2.cc device_fragment_2_$arch.o $arch &
@@ -49,7 +51,7 @@ done
 wait
 
 # Link in parallel for each architecture.
-for arch in gfx1100 gfx1151; do
+for arch in $archs; do
     ld.lld -shared device_fragment_1_$arch.o device_fragment_2_$arch.o \
         -o merged_$arch.hsaco &
 done
