@@ -33,7 +33,7 @@ compile_device_cc() {
         -triple amdgcn-amd-amdhsa \
         -target-cpu $arch \
         -fcuda-is-device \
-        -O3 \
+        -fgpu-rdc -O3 \
         -emit-obj \
         -o "$object_file" \
         -x ir "$bc_file"
